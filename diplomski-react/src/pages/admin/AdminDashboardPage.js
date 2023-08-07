@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import AdminDashboardNav from '../components/admin/AdminDashboardNav';
+import AdminDashboardNav from '../../components/admin/AdminDashboardNav';
 
 const AdminDashboardPage = () => {
   return (

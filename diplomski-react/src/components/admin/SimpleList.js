@@ -13,7 +13,7 @@ const SimpleList = (props) => {
             >
               Delete
             </button>
-            <button onClick={() => props.onEdit(item.id, item.value)}>Edit</button>
+            <button onClick={() => props.onEdit(item)}>Edit</button>
           </li>
         ))}
       </ul>

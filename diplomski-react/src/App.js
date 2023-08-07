@@ -1,8 +1,9 @@
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import AdminDashboardPage from './pages/AdminDashboardPage';
-import MealsPage from './pages/MealsPage';
-import IngredientsPage from './pages/IngredientsPage';
-import CategoriesPage from './pages/CategoriesPage';
+import AdminDashboardPage from './pages/admin/AdminDashboardPage';
+import MealsPage from './pages/admin/MealsPage';
+import IngredientsPage from './pages/admin/IngredientsPage';
+import CategoriesPage from './pages/admin/CategoriesPage';
+import ShopPage from './pages/shop/ShopPage';
 
 const router = createBrowserRouter([
   {
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
         element: <IngredientsPage />,
       },
     ],
+  },
+  {
+    path: '/shop',
+    element: <ShopPage />,
   },
 ]);
 

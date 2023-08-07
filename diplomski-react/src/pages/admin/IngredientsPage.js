@@ -1,7 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import SimpleNewForm from '../components/admin/SimpleNewForm';
-import SimpleList from '../components/admin/SimpleList';
-import SimpleEditForm from '../components/admin/SimpleEditForm';
+import SimpleList from '../../components/admin/SimpleList';
+import SimpleForm from '../../components/admin/SimpleForm';
 
 const IngredientsPage = () => {
   const apiURL =
@@ -12,18 +11,25 @@ const IngredientsPage = () => {
   const [error, setError] = useState(null);
   const [addFormVisible, setAddFormVisible] = useState(false);
   const [editFormVisible, setEditFormVisible] = useState(false);
-  const [editFormId, setEditFormId] = useState('');
-  const [editFormValue, setEditFormValue] = useState('');
+  const [ingredient, setIngredient] = useState();
 
-  const toggleAddFormVisible = () => {
-    setAddFormVisible((prevState) => !prevState);
+  const showAddForm = () => {
+    setError(null);
+    setAddFormVisible(true);
+  };
+
+  const hideAddForm = () => {
+    setError(null);
+    setAddFormVisible(false);
   };
 
   const showEditForm = () => {
+    setError(null);
     setEditFormVisible(true);
   };
 
   const hideEditForm = () => {
+    setError(null);
     setEditFormVisible(false);
   };
 
@@ -57,24 +63,38 @@ const IngredientsPage = () => {
   }, [fetchHandler]);
 
   //add item
-  const addHandler = async (value) => {
+  const addHandler = async (item, type, method) => {
     setError(null);
-    try {
-      const response = await fetch(apiURL + 'ingredients.json', {
-        method: 'POST',
-        body: JSON.stringify(value),
-        headers: {
-          'Content-type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Could not save data!');
+    if (ingredients.some((e) => e.value === item.value)) {
+      setError('Ingredient already exists');
+    } else {
+      let url = apiURL + type + '.json';
+      if (method === 'PATCH') {
+        url = apiURL + type + '/' + item.id + '.json';
       }
+      try {
+        const response = await fetch(url, {
+          method: method,
+          body: JSON.stringify(item),
+          headers: {
+            'Content-type': 'application/json',
+          },
+        });
 
-      fetchHandler();
-    } catch (error) {
-      setError(error.message);
+        if (!response.ok) {
+          throw new Error('Could not save data!');
+        }
+
+        fetchHandler();
+        if (method === 'POST') {
+          hideAddForm();
+        }
+        if (method === 'PATCH') {
+          hideEditForm();
+        }
+      } catch (error) {
+        setError(error.message);
+      }
     }
   };
 
@@ -97,37 +117,16 @@ const IngredientsPage = () => {
         }
 
         fetchHandler();
+
+        hideEditForm();
       } catch (error) {
         setError(error.message);
       }
     }
   };
 
-  //edit item
-  const editHandler = async (id, newValue) => {
-    setError(null);
-    try {
-      const response = await fetch(apiURL + 'ingredients/' + id + '.json', {
-        method: 'PATCH',
-        body: JSON.stringify(newValue),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Could not delete data!');
-      }
-
-      fetchHandler();
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
-  const setUpEditForm = (id, value) => {
-    setEditFormId(id);
-    setEditFormValue(value);
+  const setUpEditForm = (item) => {
+    setIngredient(item);
     showEditForm();
   };
 
@@ -135,24 +134,26 @@ const IngredientsPage = () => {
     <div>
       <h1>ingredient page</h1>
       {error && <p>{error}</p>}
-      <button onClick={toggleAddFormVisible}>
-        {addFormVisible ? 'Cancel' : 'Add'}
-      </button>
+      {!addFormVisible && <button onClick={showAddForm}>Add</button>}
 
       {addFormVisible && (
-        <SimpleNewForm onSubmit={addHandler} inputName={'Ingredient'} />
+        <SimpleForm
+          method={'POST'}
+          onSubmit={addHandler}
+          onCancel={hideAddForm}
+          inputName={'Ingredient'}
+          type="ingredients"
+        />
       )}
 
       {editFormVisible && (
-        <SimpleEditForm
-          onSubmit={editHandler}
+        <SimpleForm
+          method={'PATCH'}
+          onSubmit={addHandler}
           onCancel={hideEditForm}
-          onChange={(event) => {
-            setEditFormValue(event.target.value);
-          }}
           inputName={'Ingredient'}
-          id={editFormId}
-          value={editFormValue}
+          type="ingredients"
+          item={ingredient}
         />
       )}
 

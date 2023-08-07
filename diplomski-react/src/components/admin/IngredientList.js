@@ -8,7 +8,7 @@ const IngredientList = (props) => {
             <button
               type="button"
               onClick={() => {
-                props.onDelete(ingredient);
+                props.onDelete(ingredient, props.type);
               }}
             >
               X
