@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MealsList from '../../components/admin/MealsList';
 import {
+  checkCalorieRange,
+  checkDietPreference,
+  checkExcludedIngredients,
+  checkIncludedIngredients,
   compareByCaloriesAscending,
   compareByCaloriesDescending,
   compareByNameAscending,
@@ -76,7 +80,7 @@ const ShopPage = () => {
   }, [fetchHandler]);
 
   const sortMeals = () => {
-    let newMeals = [...initialMeals];
+    let newMeals = [...meals];
     switch (selectedSort.current.value) {
       case 'Name[A-Z]':
         newMeals.sort(compareByNameAscending);
@@ -106,34 +110,27 @@ const ShopPage = () => {
     setMeals(newMeals);
   };
 
-  //arr is what we check, target are all values that need to be inside arr
-  const checkIncludedIngredients = (arr, target) => {
-    return target.every((v) => arr.includes(v));
-  };
-  const checkExcludedIngredients = (arr, target) => {
-    return target.every((v) => !arr.includes(v));
-  };
-
   const filterMeals = (options) => {
     let filteredMeals = [];
 
     initialMeals.forEach((meal) => {
-      console.log(
-        checkIncludedIngredients(meal.ingredients, options.includedIngredients)
-      );
       if (
         checkIncludedIngredients(
           meal.ingredients,
           options.includedIngredients
         ) &&
-        checkExcludedIngredients(meal.ingredients, options.excludedIngredients)
+        checkExcludedIngredients(
+          meal.ingredients,
+          options.excludedIngredients
+        ) &&
+        checkCalorieRange(meal, options.caloriesMin, options.caloriesMax) &&
+        checkDietPreference(meal, options)
       ) {
         filteredMeals.push(meal);
       }
     });
 
     setMeals(filteredMeals);
-    console.log(filteredMeals);
   };
 
   return (

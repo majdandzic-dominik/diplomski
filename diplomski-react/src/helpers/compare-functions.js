@@ -117,3 +117,58 @@ export const compareByPopularityDescending = (a, b) => {
   }
   return 0;
 };
+
+//arr is what we check, target are all values that need to be inside arr
+export const checkIncludedIngredients = (ingredients, ingredientsToInclude) => {
+  return ingredientsToInclude.every((v) => ingredients.includes(v));
+};
+export const checkExcludedIngredients = (ingredients, ingredientsToExclude) => {
+  return ingredientsToExclude.every((v) => !ingredients.includes(v));
+};
+export const checkCalorieRange = (meal, min, max) => {
+  return +meal.calories >= +min && +meal.calories <= max;
+};
+export const checkDietPreference = (meal, options) => {
+  let checks = [];
+
+  if (options.isVegetarian) {
+    if (options.isVegetarian && meal.isVegetarian) {
+      checks.push(true);
+    } else {
+      checks.push(false);
+    }
+  }
+  if (options.isVegan) {
+    if (options.isVegan && meal.isVegan) {
+      checks.push(true);
+    } else {
+      checks.push(false);
+    }
+  }
+  if (options.isKosher) {
+    if (options.isKosher && meal.isKosher) {
+      checks.push(true);
+    } else {
+      checks.push(false);
+    }
+  }
+  if (options.isLactoseFree) {
+    if (options.isLactoseFree && meal.isLactoseFree) {
+      checks.push(true);
+    } else {
+      checks.push(false);
+    }
+  }
+  if (options.isGlutenFree) {
+    if (options.isGlutenFree && meal.isGlutenFree) {
+      checks.push(true);
+    } else {
+      checks.push(false);
+    }
+  }
+
+  if (checks.length <= 0) {
+    return true;
+  }
+  return checks.every((v) => v === true);
+};

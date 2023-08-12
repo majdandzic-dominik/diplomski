@@ -1,7 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { CartContext } from '../../context/cart-context';
 
 const MealsList = (props) => {
   const [meals, setMeals] = useState([]);
+
+  //cart
+  const { cartItems, addToCart, removeFromCart } = useContext(CartContext);
 
   useEffect(() => {
     setMeals(props.items);
@@ -71,6 +75,39 @@ const MealsList = (props) => {
               <div>
                 <p>Likes: {item.numOfLikes}</p>
                 <button>Like</button>
+              </div>
+            )}
+            {!props.isAdmin && item.isAvailable && (
+              <div>
+                {!cartItems.find((i) => i.id === item.id) ? (
+                  <button
+                    onClick={() => {
+                      addToCart(item);
+                    }}
+                  >
+                    Add to cart
+                  </button>
+                ) : (
+                  <div>
+                    <button
+                      onClick={() => {
+                        removeFromCart(item);
+                      }}
+                    >
+                      -
+                    </button>
+                    <span>
+                      {cartItems.find((i) => i.id === item.id).quantity}
+                    </span>
+                    <button
+                      onClick={() => {
+                        addToCart(item);
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </li>

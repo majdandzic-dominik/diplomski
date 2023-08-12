@@ -122,10 +122,24 @@ const SearchFilterForm = (props) => {
     return true;
   };
 
+  const resetForm = () => {
+    setIngredientsToExclude([]);
+    setIngredientsToInclude([]);
+    caloriesMin.current.value = 0;
+    caloriesMax.current.value = 1000;
+    isVegetarianCheckbox.current.checked = false;
+    isVeganCheckbox.current.checked = false;
+    isKosherCheckbox.current.checked = false;
+    isLactoseFreeCheckbox.current.checked = false;
+    isGlutenFreeCheckbox.current.checked = false;
+  };
   return (
     <form onSubmit={submitHandler}>
       <button type="button" onClick={() => props.onClose(false)}>
         Close filter
+      </button>
+      <button type="button" onClick={resetForm}>
+        Reset filter
       </button>
       {error && <p>{error}</p>}
       <div>
