@@ -126,7 +126,7 @@ const SearchFilterForm = (props) => {
     setIngredientsToExclude([]);
     setIngredientsToInclude([]);
     caloriesMin.current.value = 0;
-    caloriesMax.current.value = 1000;
+    caloriesMax.current.value = 10000;
     isVegetarianCheckbox.current.checked = false;
     isVeganCheckbox.current.checked = false;
     isKosherCheckbox.current.checked = false;
@@ -196,6 +196,7 @@ const SearchFilterForm = (props) => {
           type="number"
           id="calories"
           min={0}
+          max={9999}
           onChange={isCalorieRangeValid}
           defaultValue={0}
           required
@@ -205,9 +206,10 @@ const SearchFilterForm = (props) => {
           ref={caloriesMax}
           type="number"
           id="calories"
-          min={0}
+          min={1}
+          max={10000}
           onChange={isCalorieRangeValid}
-          defaultValue={1000}
+          defaultValue={10000}
           required
         />
       </div>

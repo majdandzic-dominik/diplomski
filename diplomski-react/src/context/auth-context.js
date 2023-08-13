@@ -6,48 +6,14 @@ export const AuthContext = createContext();
 export const AuthProvider = (props) => {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
-
-  // const addHandler = async (item, type, method) => {
-  //   setError(null);
-  //   if (categories.some((e) => e.value === item.value)) {
-  //     setError('Category already exists');
-  //   } else {
-  //     let url = apiURL + type + '.json';
-  //     if (method === 'PATCH') {
-  //       url = apiURL + type + '/' + item.id + '.json';
-  //     }
-  //     try {
-  //       const response = await fetch(url, {
-  //         method: 'POST',
-  //         body: JSON.stringify(item),
-  //         headers: {
-  //           'Content-type': 'application/json',
-  //         },
-  //       });
-
-  //       if (!response.ok) {
-  //         throw new Error('Could not save data!');
-  //       }
-
-  //       fetchHandler();
-  //       if (method === 'POST') {
-  //         hideAddForm();
-  //       }
-  //       if (method === 'PATCH') {
-  //         hideEditForm();
-  //       }
-  //     } catch (error) {
-  //       setError(error.message);
-  //     }
-  //   }
-  // };
+  const [userData, setUserData] = useState();
 
   const signup = async (email, password) => {
     await auth.createUserWithEmailAndPassword(email, password);
     database.ref('users/' + auth.currentUser.uid).set({
       email: email,
       isAdmin: false,
-      likes: [],
+      likes: ['1'],
     });
   };
 
@@ -56,18 +22,52 @@ export const AuthProvider = (props) => {
   };
 
   const logout = () => {
+    setUserData(null);
     return auth.signOut();
+  };
+
+  const updateLocalUserData = () => {
+    database
+      .ref()
+      .child('users')
+      .child(auth.currentUser.uid)
+      .get()
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          setUserData(snapshot.val());
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const updateOnlineUserData = async (data) => {
+    await database.ref('users/' + auth.currentUser.uid).set(data);
+    if (auth.currentUser) {
+      updateLocalUserData();
+    }
   };
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
+      if (auth.currentUser) {
+        updateLocalUserData();
+      }
       setLoading(false);
     });
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
 
-  const value = { currentUser, signup, login, logout };
+  const value = {
+    currentUser,
+    signup,
+    login,
+    logout,
+    userData,
+    updateLocalUserData,
+    updateOnlineUserData,
+  };
 
   return (
     <AuthContext.Provider value={value}>

@@ -9,7 +9,7 @@ const AuthenticationForm = (props) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const { signup, login } = useContext(AuthContext);
+  const { signup, login, userData } = useContext(AuthContext);
 
   const submitHandler = async (event) => {
     event.preventDefault();
@@ -19,7 +19,11 @@ const AuthenticationForm = (props) => {
         setError('');
         setLoading(true);
         await login(emailRef.current.value, passwordRef.current.value);
-        navigate('/shop')
+        if (userData.isAdmin) {
+          navigate('/admin');
+        } else {
+          navigate('/shop');
+        }
       } catch (e) {
         setError(e.message);
       }
@@ -28,7 +32,7 @@ const AuthenticationForm = (props) => {
         setError('');
         setLoading(true);
         await signup(emailRef.current.value, passwordRef.current.value);
-        navigate('/admin')
+        navigate('/shop');
       } catch (e) {
         setError(e.message);
       }

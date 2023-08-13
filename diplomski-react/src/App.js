@@ -9,43 +9,52 @@ import UserPage from './pages/shop/UserPage';
 import SignUpPage from './pages/auth/SignUpPage';
 import LoginPage from './pages/auth/LoginPage';
 import { AuthProvider } from './context/auth-context';
+import MainPage from './pages/MainPage';
+import { CartProvider } from './context/cart-context';
 
 const router = createBrowserRouter([
   {
-    path: '/admin',
-    element: <AdminDashboardPage />,
-    id: 'root',
+    path: '/',
+    element: <MainPage />,
     children: [
-      { path: 'meals', element: <MealsPage /> },
-      { path: 'categories', element: <CategoriesPage /> },
       {
-        path: 'ingredients',
-        element: <IngredientsPage />,
+        path: 'admin',
+        element: <AdminDashboardPage />,
+        children: [
+          { path: 'meals', element: <MealsPage /> },
+          { path: 'categories', element: <CategoriesPage /> },
+          {
+            path: 'ingredients',
+            element: <IngredientsPage />,
+          },
+        ],
+      },
+      {
+        path: 'shop',
+        element: <UserPage />,
+        children: [
+          { index: true, element: <ShopPage /> },
+          { path: 'cart', element: <CartPage /> },
+        ],
+      },
+      {
+        path: 'signup',
+        element: <SignUpPage />,
+      },
+      {
+        path: 'login',
+        element: <LoginPage />,
       },
     ],
-  },
-  {
-    path: '/shop',
-    element: <UserPage />,
-    children: [
-      { index: true, element: <ShopPage /> },
-      { path: 'cart', element: <CartPage /> },
-    ],
-  },
-  {
-    path: '/signup',
-    element: <SignUpPage />,
-  },
-  {
-    path: '/login',
-    element: <LoginPage />,
   },
 ]);
 
 function App() {
   return (
     <AuthProvider>
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </AuthProvider>
   );
 }

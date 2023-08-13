@@ -19,7 +19,6 @@ const ShopNav = () => {
     }
   };
 
-
   //cart
   const { cartItems } = useContext(CartContext);
 
@@ -28,10 +27,12 @@ const ShopNav = () => {
       <h1>Restaurant</h1>
       <div>
         <Link to={'cart'}>Cart: ({cartItems.length})</Link>
-        <div>
-          <p>Signed in as: {currentUser.email}</p>
-          <button onClick={logoutHandler}>Log out</button>
-        </div>
+        {currentUser && (
+          <div>
+            <p>Signed in as: {currentUser.email}</p>
+            <button onClick={logoutHandler}>Log out</button>
+          </div>
+        )}
         {error && <p>{error}</p>}
       </div>
     </div>

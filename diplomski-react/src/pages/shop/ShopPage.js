@@ -21,10 +21,19 @@ const ShopPage = () => {
     'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/';
 
   const [error, setError] = useState(null);
-  const [initialMeals, setInitialMeals] = useState(null);
   const [meals, setMeals] = useState([]);
+  const [options, setOptions] = useState({
+    includedIngredients: [],
+    excludedIngredients: [],
+    caloriesMin: 0,
+    caloriesMax: 10000,
+    isVegetarian: false,
+    isVegan: false,
+    isKosher: false,
+    isLactoseFree: false,
+    isGlutenFree: false,
+  });
   const [filterFormVisible, setFilterFormVisible] = useState(false);
-
   const selectedSort = useRef();
 
   const sortOptions = [
@@ -37,6 +46,69 @@ const ShopPage = () => {
     'Popularity[LOW-HIGH]',
     'Popularity[HIGH-LOW]',
   ];
+
+  const sortMeals = (meals) => {
+    let newMeals = [...meals];
+    switch (selectedSort.current.value) {
+      case 'Name[A-Z]':
+        newMeals.sort(compareByNameAscending);
+        break;
+      case 'Name[Z-A]':
+        newMeals.sort(compareByNameDescending);
+        break;
+      case 'Price[LOW-HIGH]':
+        newMeals.sort(compareByPriceAscending);
+        break;
+      case 'Price[HIGH-LOW]':
+        newMeals.sort(compareByPriceDescending);
+        break;
+      case 'Calories[LOW-HIGH]':
+        newMeals.sort(compareByCaloriesAscending);
+        break;
+      case 'Calories[HIGH-LOW]':
+        newMeals.sort(compareByCaloriesDescending);
+        break;
+      case 'Popularity[LOW-HIGH]':
+        newMeals.sort(compareByPopularityAscending);
+        break;
+      case 'Popularity[HIGH-LOW]':
+        newMeals.sort(compareByPopularityDescending);
+        break;
+    }
+    return newMeals;
+    // setMeals(newMeals);
+  };
+
+  const filterMeals = useCallback((initialData, options) => {
+    let filteredMeals = [];
+
+    initialData.forEach((meal) => {
+      if (
+        checkIncludedIngredients(
+          meal.ingredients,
+          options.includedIngredients
+        ) &&
+        checkExcludedIngredients(
+          meal.ingredients,
+          options.excludedIngredients
+        ) &&
+        checkCalorieRange(meal, options.caloriesMin, options.caloriesMax) &&
+        checkDietPreference(meal, options)
+      ) {
+        filteredMeals.push(meal);
+      }
+    });
+
+    return filteredMeals;
+    // setMeals(filteredMeals);
+  }, []);
+
+  const updateMeals = useCallback(
+    (initialData, options) => {
+      setMeals(sortMeals(filterMeals(initialData, options)));
+    },
+    [filterMeals]
+  );
 
   //fetch items
   const fetchHandler = useCallback(async () => {
@@ -68,70 +140,15 @@ const ShopPage = () => {
           numOfOrders: data[key].numOfOrders,
         });
       }
-      setInitialMeals(loadedMeals);
-      setMeals(loadedMeals);
+      updateMeals(loadedMeals, options);
     } catch (error) {
       setError(error.message);
     }
-  }, []);
+  }, [updateMeals, options]);
 
   useEffect(() => {
     fetchHandler();
   }, [fetchHandler]);
-
-  const sortMeals = () => {
-    let newMeals = [...meals];
-    switch (selectedSort.current.value) {
-      case 'Name[A-Z]':
-        newMeals.sort(compareByNameAscending);
-        break;
-      case 'Name[Z-A]':
-        newMeals.sort(compareByNameDescending);
-        break;
-      case 'Price[LOW-HIGH]':
-        newMeals.sort(compareByPriceAscending);
-        break;
-      case 'Price[HIGH-LOW]':
-        newMeals.sort(compareByPriceDescending);
-        break;
-      case 'Calories[LOW-HIGH]':
-        newMeals.sort(compareByCaloriesAscending);
-        break;
-      case 'Calories[HIGH-LOW]':
-        newMeals.sort(compareByCaloriesDescending);
-        break;
-      case 'Popularity[LOW-HIGH]':
-        newMeals.sort(compareByPopularityAscending);
-        break;
-      case 'Popularity[HIGH-LOW]':
-        newMeals.sort(compareByPopularityDescending);
-        break;
-    }
-    setMeals(newMeals);
-  };
-
-  const filterMeals = (options) => {
-    let filteredMeals = [];
-
-    initialMeals.forEach((meal) => {
-      if (
-        checkIncludedIngredients(
-          meal.ingredients,
-          options.includedIngredients
-        ) &&
-        checkExcludedIngredients(
-          meal.ingredients,
-          options.excludedIngredients
-        ) &&
-        checkCalorieRange(meal, options.caloriesMin, options.caloriesMax) &&
-        checkDietPreference(meal, options)
-      ) {
-        filteredMeals.push(meal);
-      }
-    });
-
-    setMeals(filteredMeals);
-  };
 
   return (
     <div>
@@ -142,19 +159,19 @@ const ShopPage = () => {
       )}
       {filterFormVisible && (
         <SearchFilterForm
-          onSubmit={filterMeals}
+          onSubmit={setOptions}
           onClose={setFilterFormVisible}
         />
       )}
       <div>
         Sort by:
-        <select ref={selectedSort} onChange={sortMeals}>
+        <select ref={selectedSort} onChange={fetchHandler}>
           {sortOptions.map((value, index) => (
             <option key={index}>{value}</option>
           ))}
         </select>
       </div>
-      <MealsList isAdmin={false} items={meals} />
+      <MealsList isAdmin={false} items={meals} updateItems={fetchHandler} />
     </div>
   );
 };

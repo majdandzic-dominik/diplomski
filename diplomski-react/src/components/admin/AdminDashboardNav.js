@@ -23,10 +23,12 @@ const AdminDashboardNav = () => {
     <header>
       <div>
         <h1>Dashboard</h1>
-        <div>
-          <p>Signed in as: {currentUser.email}</p>
-          <button onClick={logoutHandler}>Log out</button>
-        </div>
+        {currentUser && (
+          <div>
+            <p>Signed in as: {currentUser.email}</p>
+            <button onClick={logoutHandler}>Log out</button>
+          </div>
+        )}
         {error && <p>{error}</p>}
       </div>
       <nav>
