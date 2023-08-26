@@ -3,9 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from '../../context/cart-context';
 import { AuthContext } from '../../context/auth-context';
 
+import classes from './ShopNav.module.css';
+
 const ShopNav = () => {
   const [error, setError] = useState('');
-  const { currentUser, logout } = useContext(AuthContext);
+  const { currentUser, logout, setUserData } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const logoutHandler = async () => {
@@ -13,6 +15,7 @@ const ShopNav = () => {
 
     try {
       await logout();
+      setUserData(null);
       navigate('/login');
     } catch {
       setError('Failed to log out');
@@ -23,19 +26,19 @@ const ShopNav = () => {
   const { cartItems } = useContext(CartContext);
 
   return (
-    <div>
+    <header className={classes.header}>
       <h1>Restaurant</h1>
-      <div>
+      <div className={classes.info}>
         <Link to={'cart'}>Cart: ({cartItems.length})</Link>
         {currentUser && (
-          <div>
-            <p>Signed in as: {currentUser.email}</p>
+          <>
+            <p><strong>Email: </strong>{currentUser.email}</p>
             <button onClick={logoutHandler}>Log out</button>
-          </div>
+          </>
         )}
         {error && <p>{error}</p>}
       </div>
-    </div>
+    </header>
   );
 };
 

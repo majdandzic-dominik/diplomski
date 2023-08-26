@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import SimpleList from '../../components/admin/SimpleList';
 import SimpleForm from '../../components/admin/SimpleForm';
+import classes from './IngredientsPage.module.css';
+import { compareByValueAscending } from '../../helpers/compare-functions';
 
 const IngredientsPage = () => {
   const apiURL =
@@ -16,6 +18,7 @@ const IngredientsPage = () => {
   const showAddForm = () => {
     setError(null);
     setAddFormVisible(true);
+    setEditFormVisible(false);
   };
 
   const hideAddForm = () => {
@@ -26,6 +29,7 @@ const IngredientsPage = () => {
   const showEditForm = () => {
     setError(null);
     setEditFormVisible(true);
+    setAddFormVisible(false);
   };
 
   const hideEditForm = () => {
@@ -36,6 +40,7 @@ const IngredientsPage = () => {
   //get list
 
   const fetchHandler = useCallback(async () => {
+    setError(null);
     try {
       const response = await fetch(apiURL + 'ingredients.json');
 
@@ -52,6 +57,7 @@ const IngredientsPage = () => {
           value: data[key].value,
         });
       }
+      loadedIngredients.sort(compareByValueAscending);
       setIngredients(loadedIngredients);
     } catch (error) {
       setError(error.message);
@@ -119,6 +125,7 @@ const IngredientsPage = () => {
         fetchHandler();
 
         hideEditForm();
+        hideAddForm();
       } catch (error) {
         setError(error.message);
       }
@@ -131,10 +138,14 @@ const IngredientsPage = () => {
   };
 
   return (
-    <div>
-      <h1>ingredient page</h1>
-      {error && <p>{error}</p>}
-      {!addFormVisible && <button onClick={showAddForm}>Add</button>}
+    <div className={classes.container}>
+      <h2>Ingredients</h2>
+      {error && <p className={classes.error}>{error}</p>}
+      {!addFormVisible && (
+        <button onClick={showAddForm} className={classes['btn-add']}>
+          + Add
+        </button>
+      )}
 
       {addFormVisible && (
         <SimpleForm
@@ -157,12 +168,15 @@ const IngredientsPage = () => {
         />
       )}
 
-      <SimpleList
-        title={'INGREDIENTS'}
-        items={ingredients}
-        onDelete={deleteHandler}
-        onEdit={setUpEditForm}
-      />
+      {ingredients ? (
+        <SimpleList
+          items={ingredients}
+          onDelete={deleteHandler}
+          onEdit={setUpEditForm}
+        />
+      ) : (
+        <p>No ingredients found</p>
+      )}
     </div>
   );
 };

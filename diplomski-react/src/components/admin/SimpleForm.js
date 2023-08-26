@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+import classes from './SimpleForm.module.css';
+
 const SimpleEditForm = (props) => {
   const txtFieldValue = useRef();
 
@@ -25,20 +27,30 @@ const SimpleEditForm = (props) => {
   }, [props.item, item]);
 
   return (
-    <div>
-      <button onClick={props.onCancel}>Cancel</button>
-      <form onSubmit={submitHandler}>
-        <div>
-          <label htmlFor={props.type}>{props.inputName} name:</label>
-          <input
-            type="text"
-            id={props.type}
-            ref={txtFieldValue}
-            defaultValue={props.item ? item.value : ''}
-            required
-          />
+    <div className={classes.container}>
+      <h3>{props.method === 'POST' ? 'Add' : 'Edit'}</h3>
+
+      <form className={classes.form} onSubmit={submitHandler}>
+        <label htmlFor={props.type}>{props.inputName} name: </label>
+        <input
+          type="text"
+          id={props.type}
+          ref={txtFieldValue}
+          defaultValue={props.item ? item.value : ''}
+          required
+        />
+        <div className={classes.actions}>
+          <button className={classes['btn-save']} type="submit">
+            Save
+          </button>
+          <button
+            className={classes['btn-cancel']}
+            type="button"
+            onClick={props.onCancel}
+          >
+            Cancel
+          </button>
         </div>
-        <button>Save</button>
       </form>
     </div>
   );

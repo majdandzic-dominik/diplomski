@@ -7,17 +7,17 @@ const LoginPage = () => {
   const { userData } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userData) {
-      if (userData.isAdmin) {
-        navigate('/admin');
-      } else {
-        navigate('/shop');
-      }
-    } else {
-      console.log('STAY LOGIN');
-    }
-  }, [navigate, userData]);
+  // useEffect(() => {
+  //   if (userData) {
+  //     if (userData.isAdmin) {
+  //       navigate('/admin');
+  //     } else {
+  //       navigate('/shop');
+  //     }
+  //   } else {
+  //     console.log('STAY LOGIN');
+  //   }
+  // }, [navigate, userData]);
   return <AuthenticationForm isLogin={true} />;
 };
 

@@ -2,6 +2,8 @@ import { useContext, useState } from 'react';
 import { CartContext } from '../../context/cart-context';
 import { Link, useNavigate } from 'react-router-dom';
 
+import classes from './CartPage.module.css';
+
 const CartPage = () => {
   const apiURL =
     'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/';
@@ -56,18 +58,24 @@ const CartPage = () => {
   };
 
   return (
-    <div>
-      <h1>Cart</h1>
-      {error && <p>{error}</p>}
-      <Link to={'..'}>Back</Link>
-      <button onClick={clearCart}>Clear cart</button>
-      <div>
+    <div className={classes.container}>
+      <h2>Cart</h2>
+      {error && <p className={classes.error}>{error}</p>}
+      <div className={classes.actions}>
+        <Link to={'..'}>Back</Link>
+        <button onClick={clearCart} className={classes['btn-reset']}>
+          Clear cart
+        </button>
+      </div>
+      <div className={classes.items}>
         {cartItems.length > 0 ? (
           cartItems.map((item, index) => (
-            <div key={index}>
-              <h3>Name: {item.name}</h3>
-              <p>Price: ${item.price}</p>
-              <div>
+            <div key={index} className={classes.item}>
+              <div className={classes.info}>
+                <h3>{item.name}</h3>
+                <p>(${item.price})</p>
+              </div>
+              <div className={classes['cart-controls']}>
                 <button
                   onClick={() => {
                     removeFromCart(item);
@@ -87,11 +95,17 @@ const CartPage = () => {
             </div>
           ))
         ) : (
-          <h3>Cart is empty</h3>
+          <h3 className={classes.item}>Cart is empty</h3>
         )}
       </div>
-      <div>Total: ${getCartTotal()}</div>
-      <button onClick={orderHandler}>Order</button>
+      <div className={classes.price}>
+        <strong>Total: </strong>${getCartTotal()}
+      </div>
+      <div className={classes.apply}>
+        <button onClick={orderHandler} className={classes['btn-apply']}>
+          Order
+        </button>
+      </div>
     </div>
   );
 };

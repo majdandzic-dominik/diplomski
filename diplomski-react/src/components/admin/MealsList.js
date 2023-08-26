@@ -2,6 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../../context/cart-context';
 import { AuthContext } from '../../context/auth-context';
 
+import classes from './MealsList.module.css';
+
 const MealsList = (props) => {
   const apiURL =
     'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/';
@@ -11,7 +13,8 @@ const MealsList = (props) => {
 
   //cart
   const { cartItems, addToCart, removeFromCart } = useContext(CartContext);
-  const { userData, updateOnlineUserData } = useContext(AuthContext);
+  const { userData, userDataLoading, updateOnlineUserData } =
+    useContext(AuthContext);
 
   const likeHandler = (item) => {
     let newData = { ...userData };
@@ -69,15 +72,24 @@ const MealsList = (props) => {
   }, [props.items]);
 
   return (
-    <div>
-      <h2>MEALS LIST</h2>
-      {error && <p>{error}</p>}
-      <ul>
+    <div className={classes.container}>
+      {error && <p className={classes.error}>{error}</p>}
+      <ul className={classes.list}>
         {meals.map((item) => (
-          <li key={item.id}>
-            <div>
-              {item.isAvailable ? 'Available' : 'Unavailable'}
-              {props.isAdmin && (
+          <li
+            key={item.id}
+            className={`${
+              !item.isAvailable ? classes['unavailable-item'] : ''
+            }`}
+          >
+            {props.isAdmin && (
+              <div className={classes.availability}>
+                {item.isAvailable ? (
+                  <span>Available</span>
+                ) : (
+                  <span>Unavailable</span>
+                )}
+
                 <button
                   onClick={() =>
                     props.onChangeAvailabiliy(
@@ -88,63 +100,104 @@ const MealsList = (props) => {
                 >
                   {item.isAvailable ? 'Set unavailable' : 'Set available'}
                 </button>
-              )}
-            </div>
-            <div>
-              <h3>{item.name}</h3>
-              <p>${item.price}</p>
-              <p>{item.calories} kcal</p>
-              <p>Category: {item.category}</p>
-            </div>
+              </div>
+            )}
+            {!props.isAdmin && !item.isAvailable && (
+              <div className={classes.unavailable}>
+                <span>Unavailable</span>
+              </div>
+            )}
 
-            <ul>
-              Ingredients:
-              {item.ingredients.map((ingredient, index) => (
-                <li key={index}>{ingredient}</li>
-              ))}
-            </ul>
-
-            <div>
-              <p>{item.isVegetarian && 'Vegetarian'}</p>
-              <p>{item.isVegan && 'Vegan'}</p>
-              <p>{item.isKosher && 'Kosher'}</p>
-              <p>{item.isGlutenFree && 'Gluten free'}</p>
-              <p>{item.isLactoseFree && 'Lactose free'}</p>
-            </div>
-            {props.isAdmin && (
+            <div className={classes.info}>
+              <div className={classes['title-category']}>
+                <h3>{item.name}</h3>
+                <p className={classes.category}>({item.category})</p>
+              </div>
               <div>
-                <p>Likes: {item.numOfLikes}</p>
-                <p>Orders: {item.numOfOrders}</p>
+                <p>
+                  <strong>Price: </strong>${item.price}
+                </p>
+                <p>
+                  <strong>Calories: </strong>
+                  {item.calories} kcal
+                </p>
+              </div>
+            </div>
+
+            <div className={classes.ingredients}>
+              <p>Ingredients:</p>
+              <ul>
+                {item.ingredients.map((ingredient, index) => (
+                  <li key={index}>{ingredient}</li>
+                ))}
+              </ul>
+            </div>
+
+            {(item.isVegetarian ||
+              item.isVegan ||
+              item.isKosher ||
+              item.isGlutenFree ||
+              item.isLactoseFree) && (
+              <ul className={classes.checks}>
+                {item.isVegetarian && <li>Vegetarian</li>}
+                {item.isVegan && <li>Vegan</li>}
+                {item.isKosher && <li>Kosher</li>}
+                {item.isGlutenFree && <li>Gluten free</li>}
+                {item.isLactoseFree && <li>Lactose free</li>}
+              </ul>
+            )}
+            {props.isAdmin && (
+              <div className={classes.likes}>
+                <p>
+                  <strong>Likes: </strong>
+                  {item.numOfLikes}
+                </p>
+                <p>
+                  <strong>Orders: </strong>
+                  {item.numOfOrders}
+                </p>
               </div>
             )}
             {props.isAdmin && (
-              <div>
+              <div className={classes.actions}>
+                <button
+                  onClick={() => props.onEdit(item)}
+                  className={classes['btn-edit']}
+                >
+                  Edit
+                </button>
                 <button
                   onClick={() => {
                     props.onDelete(item.id);
                   }}
+                  className={classes['btn-delete']}
                 >
                   Delete
                 </button>
-                <button onClick={() => props.onEdit(item)}>Edit</button>
               </div>
             )}
-            {!props.isAdmin && (
-              <div>
-                <p>Likes: {item.numOfLikes}</p>
-                <button
-                  onClick={() => {
-                    likeHandler(item);
-                  }}
-                >
-                  {userData.likes && userData.likes.includes(item.id)
-                    ? 'Remove Like'
-                    : 'Like'}
-                </button>
-              </div>
-            )}
+            {!props.isAdmin &&
+              (!userDataLoading ? (
+                <div className={classes.likes}>
+                  <p>
+                    <strong>Likes: </strong>
+                    {item.numOfLikes}
+                  </p>
+                  <button
+                    onClick={() => {
+                      likeHandler(item);
+                    }}
+                  >
+                    {userData.likes && userData.likes.includes(item.id)
+                      ? 'Remove Like'
+                      : 'Like'}
+                  </button>
+                </div>
+              ) : (
+                <div>Sending data...</div>
+              ))}
             {!props.isAdmin && item.isAvailable && (
-              <div>
+              <div className={classes['cart-controls']}>
                 {!cartItems.find((i) => i.id === item.id) ? (
                   <button
                     onClick={() => {

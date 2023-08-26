@@ -7,22 +7,22 @@ const AdminDashboardPage = () => {
   const { userData } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userData) {
-      if (userData.isAdmin) {
-        console.log('STAY ADMIN');
-      } else {
-        navigate('/shop');
-      }
-    } else {
-      navigate('/login');
-    }
-  }, [navigate, userData]);
+  // useEffect(() => {
+  //   if (userData) {
+  //     if (userData.isAdmin) {
+  //       console.log('STAY ADMIN');
+  //     } else {
+  //       navigate('/shop');
+  //     }
+  //   } else {
+  //     navigate('/login');
+  //   }
+  // }, [navigate, userData]);
   return (
-    <div>
+    <>
       <AdminDashboardNav />
       <Outlet />
-    </div>
+    </>
   );
 };
 

@@ -2,6 +2,9 @@ import { useCallback, useEffect, useState } from 'react';
 import SimpleForm from '../../components/admin/SimpleForm';
 import SimpleList from '../../components/admin/SimpleList';
 
+import classes from './CategoriesPage.module.css';
+import { compareByValueAscending } from '../../helpers/compare-functions';
+
 const CategoriesPage = () => {
   const apiURL =
     'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/';
@@ -16,6 +19,7 @@ const CategoriesPage = () => {
   const showAddForm = () => {
     setError(null);
     setAddFormVisible(true);
+    setEditFormVisible(false);
   };
 
   const hideAddForm = () => {
@@ -26,6 +30,7 @@ const CategoriesPage = () => {
   const showEditForm = () => {
     setError(null);
     setEditFormVisible(true);
+    setAddFormVisible(false);
   };
 
   const hideEditForm = () => {
@@ -36,6 +41,7 @@ const CategoriesPage = () => {
   //get list
 
   const fetchHandler = useCallback(async () => {
+    setError(null);
     try {
       const response = await fetch(apiURL + 'categories.json');
 
@@ -52,6 +58,7 @@ const CategoriesPage = () => {
           value: data[key].value,
         });
       }
+      loadedCategories.sort(compareByValueAscending);
       setCategories(loadedCategories);
     } catch (error) {
       setError(error.message);
@@ -118,6 +125,7 @@ const CategoriesPage = () => {
 
         fetchHandler();
         hideEditForm();
+        hideAddForm();
       } catch (error) {
         setError(error.message);
       }
@@ -130,10 +138,14 @@ const CategoriesPage = () => {
   };
 
   return (
-    <div>
-      <h1>Categories page</h1>
-      {error && <p>{error}</p>}
-      {!addFormVisible && <button onClick={showAddForm}>Add</button>}
+    <div className={classes.container}>
+      <h2>Categories</h2>
+      {error && <p className={classes.error}>{error}</p>}
+      {!addFormVisible && (
+        <button onClick={showAddForm} className={classes['btn-add']}>
+          + Add
+        </button>
+      )}
 
       {addFormVisible && (
         <SimpleForm
@@ -156,12 +168,15 @@ const CategoriesPage = () => {
         />
       )}
 
-      <SimpleList
-        title={'CATEGORIES'}
-        items={categories}
-        onDelete={deleteHandler}
-        onEdit={setUpEditForm}
-      />
+      {categories ? (
+        <SimpleList
+          items={categories}
+          onDelete={deleteHandler}
+          onEdit={setUpEditForm}
+        />
+      ) : (
+        <p>No categories found</p>
+      )}
     </div>
   );
 };

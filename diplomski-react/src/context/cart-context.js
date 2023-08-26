@@ -1,14 +1,14 @@
-import { createContext, useState } from "react";
+import { createContext, useState } from 'react';
 
-export const CartContext = createContext()
+export const CartContext = createContext();
 
 export const CartProvider = (props) => {
-  const [cartItems, setCartItems] = useState([])
+  const [cartItems, setCartItems] = useState([]);
 
   const addToCart = (item) => {
     const isItemInCart = cartItems.find((cartItem) => cartItem.id === item.id);
 
-  //if item in cart, increase quantity by one, else add new item
+    //if item in cart, increase quantity by one, else add new item
     if (isItemInCart) {
       setCartItems(
         cartItems.map((cartItem) =>
@@ -43,7 +43,10 @@ export const CartProvider = (props) => {
   };
 
   const getCartTotal = () => {
-    return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cartItems.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
   };
 
   return (

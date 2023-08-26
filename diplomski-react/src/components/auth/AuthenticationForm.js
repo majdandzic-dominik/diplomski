@@ -2,6 +2,8 @@ import { useContext, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/auth-context';
 
+import classes from './AuthenticationForm.module.css';
+
 const AuthenticationForm = (props) => {
   const emailRef = useRef();
   const passwordRef = useRef();
@@ -41,12 +43,19 @@ const AuthenticationForm = (props) => {
   };
 
   return (
-    <form onSubmit={submitHandler}>
-      <h1>{props.isLogin ? 'Log in' : 'Create a new user'}</h1>
-      {error && <p>{error}</p>}
+    <form onSubmit={submitHandler} className={classes.form}>
+      <h1>{props.isLogin ? 'Login' : 'Register'}</h1>
+      {error && <p className={classes.error}>{error}</p>}
       <p>
         <label htmlFor="email">Email</label>
-        <input ref={emailRef} id="email" type="email" name="email" required />
+        <input
+          ref={emailRef}
+          id="email"
+          type="email"
+          name="email"
+          maxLength={64}
+          required
+        />
       </p>
       <p>
         <label htmlFor="password">Password</label>
@@ -55,18 +64,19 @@ const AuthenticationForm = (props) => {
           id="password"
           type="password"
           name="password"
+          maxLength={32}
           required
         />
       </p>
-      <div>
+      <div className={classes.actions}>
         {props.isLogin ? (
           <Link to={'/signup'}>Create new user</Link>
         ) : (
-          <Link to={'/login'}>Login</Link>
+          <Link to={'/login'}>Log in as existing user</Link>
         )}
 
         <button disabled={loading} type="submit">
-          {props.isLogin ? 'Log in' : 'Sign up'}
+          {props.isLogin ? 'Log In' : 'Sign Up'}
         </button>
       </div>
     </form>

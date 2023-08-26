@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import MealForm from '../../components/admin/MealForm';
 import MealsList from '../../components/admin/MealsList';
+import { compareByNameAscending } from '../../helpers/compare-functions';
+
+import classes from './MealsPage.module.css';
 
 const MealsPage = () => {
   const apiURL =
@@ -16,6 +19,7 @@ const MealsPage = () => {
   const showAddForm = () => {
     setError(null);
     setAddFormVisible(true);
+    setEditFormVisible(false);
   };
 
   const hideAddForm = () => {
@@ -26,6 +30,7 @@ const MealsPage = () => {
   const showEditForm = () => {
     setError(null);
     setEditFormVisible(true);
+    setAddFormVisible(false);
   };
 
   const hideEditForm = () => {
@@ -35,6 +40,7 @@ const MealsPage = () => {
 
   //fetch items
   const fetchHandler = useCallback(async () => {
+    setError(null);
     try {
       const response = await fetch(apiURL + 'meals.json');
 
@@ -63,6 +69,7 @@ const MealsPage = () => {
           numOfOrders: data[key].numOfOrders,
         });
       }
+      loadedMeals.sort(compareByNameAscending);
       setMeals(loadedMeals);
     } catch (error) {
       setError(error.message);
@@ -140,10 +147,15 @@ const MealsPage = () => {
   };
 
   return (
-    <div>
-      {error && <p>{error}</p>}
+    <div className={classes.container}>
+      <h2>Meals</h2>
+      {error && <p className={classes.error}>{error}</p>}
 
-      {!addFormVisible && <button onClick={showAddForm}>Add</button>}
+      {!addFormVisible && (
+        <button onClick={showAddForm} className={classes['btn-add']}>
+          + Add
+        </button>
+      )}
 
       {addFormVisible && (
         <MealForm
@@ -161,13 +173,18 @@ const MealsPage = () => {
           onCancel={hideEditForm}
         />
       )}
-      <MealsList
-        isAdmin={true}
-        items={meals}
-        onDelete={deleteHandler}
-        onEdit={setUpEditForm}
-        onChangeAvailabiliy={addHandler}
-      />
+
+      {meals.length > 0 ? (
+        <MealsList
+          isAdmin={true}
+          items={meals}
+          onDelete={deleteHandler}
+          onEdit={setUpEditForm}
+          onChangeAvailabiliy={addHandler}
+        />
+      ) : (
+        <p>No meals found.</p>
+      )}
     </div>
   );
 };

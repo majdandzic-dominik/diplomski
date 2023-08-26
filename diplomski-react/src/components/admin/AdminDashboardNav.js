@@ -5,7 +5,7 @@ import { AuthContext } from '../../context/auth-context';
 
 const AdminDashboardNav = () => {
   const [error, setError] = useState('');
-  const { currentUser, logout } = useContext(AuthContext);
+  const { currentUser, logout, setUserData } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const logoutHandler = async () => {
@@ -13,6 +13,7 @@ const AdminDashboardNav = () => {
 
     try {
       await logout();
+      setUserData(null);
       navigate('/login');
     } catch {
       setError('Failed to log out');
@@ -20,18 +21,20 @@ const AdminDashboardNav = () => {
   };
 
   return (
-    <header>
-      <div>
+    <header className={classes.header}>
+      <div className={classes['header-basic']}>
         <h1>Dashboard</h1>
         {currentUser && (
-          <div>
-            <p>Signed in as: {currentUser.email}</p>
+          <div className={classes.info}>
+            <p>
+              <strong>Signed in as:</strong> {currentUser.email}
+            </p>
             <button onClick={logoutHandler}>Log out</button>
           </div>
         )}
         {error && <p>{error}</p>}
       </div>
-      <nav>
+      <nav className={classes.navigation}>
         <ul className={classes.list}>
           <li>
             <NavLink

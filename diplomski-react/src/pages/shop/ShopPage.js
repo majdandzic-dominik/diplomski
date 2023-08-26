@@ -16,6 +16,8 @@ import {
 } from '../../helpers/compare-functions';
 import SearchFilterForm from '../../components/shop/SearchFilterForm';
 
+import classes from './ShopPage.module.css';
+
 const ShopPage = () => {
   const apiURL =
     'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/';
@@ -151,11 +153,16 @@ const ShopPage = () => {
   }, [fetchHandler]);
 
   return (
-    <div>
-      <h1>SHOP</h1>
-      {error && <p>{error}</p>}
+    <div className={classes.container}>
+      <h2>MENU</h2>
+      {error && <p className={classes.error}>{error}</p>}
       {!filterFormVisible && (
-        <button onClick={() => setFilterFormVisible(true)}>Show filter</button>
+        <button
+          onClick={() => setFilterFormVisible(true)}
+          className={classes['btn-filter']}
+        >
+          Show filter
+        </button>
       )}
       {filterFormVisible && (
         <SearchFilterForm
@@ -163,15 +170,21 @@ const ShopPage = () => {
           onClose={setFilterFormVisible}
         />
       )}
-      <div>
-        Sort by:
+      <div className={classes['sort-selection']}>
+        <span>
+          <strong>Sort by: </strong>
+        </span>
         <select ref={selectedSort} onChange={fetchHandler}>
           {sortOptions.map((value, index) => (
             <option key={index}>{value}</option>
           ))}
         </select>
       </div>
-      <MealsList isAdmin={false} items={meals} updateItems={fetchHandler} />
+      {meals.length > 0 ? (
+        <MealsList isAdmin={false} items={meals} updateItems={fetchHandler} />
+      ) : (
+        <p className={classes.notification}>No meals found</p>
+      )}
     </div>
   );
 };

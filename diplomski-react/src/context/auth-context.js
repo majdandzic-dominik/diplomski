@@ -5,28 +5,35 @@ export const AuthContext = createContext();
 
 export const AuthProvider = (props) => {
   const [currentUser, setCurrentUser] = useState();
-  const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState();
+  const [loading, setLoading] = useState(true);
+  const [userDataLoading, setUserDataLoading] = useState(false);
 
   const signup = async (email, password) => {
-    await auth.createUserWithEmailAndPassword(email, password);
-    database.ref('users/' + auth.currentUser.uid).set({
+    console.log(userData);
+    const res = await auth.createUserWithEmailAndPassword(email, password);
+    await database.ref('users/' + auth.currentUser.uid).set({
       email: email,
       isAdmin: false,
       likes: ['1'],
     });
+    return res;
   };
 
   const login = (email, password) => {
+    console.log(userData);
     return auth.signInWithEmailAndPassword(email, password);
   };
 
   const logout = () => {
-    setUserData(null);
+    console.log('logging out page:');
+    console.log(userData);
     return auth.signOut();
   };
 
   const updateLocalUserData = () => {
+    setUserDataLoading(true);
+    console.log('uso je u update');
     database
       .ref()
       .child('users')
@@ -35,6 +42,11 @@ export const AuthProvider = (props) => {
       .then((snapshot) => {
         if (snapshot.exists()) {
           setUserData(snapshot.val());
+          setUserDataLoading(false);
+          console.log('uso je u if');
+        } else {
+          setUserDataLoading(false);
+          console.log('uso je u else');
         }
       })
       .catch((error) => {
@@ -51,7 +63,9 @@ export const AuthProvider = (props) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setCurrentUser(user);
+      console.log('uso je u unsubscribe');
       if (auth.currentUser) {
+        console.log('uso je u IF');
         updateLocalUserData();
       }
       setLoading(false);
@@ -67,6 +81,8 @@ export const AuthProvider = (props) => {
     userData,
     updateLocalUserData,
     updateOnlineUserData,
+    userDataLoading,
+    setUserData,
   };
 
   return (

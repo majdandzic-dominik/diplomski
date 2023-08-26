@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import IngredientList from './IngredientList';
 
+import classes from './MealForm.module.css';
+
 const MealNewForm = (props) => {
   const apiURL =
     'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/';
 
   const [error, setError] = useState(null);
+
+  const titleRef = useRef();
 
   const nameInput = useRef();
   const priceInput = useRef();
@@ -104,7 +108,10 @@ const MealNewForm = (props) => {
       setCurrentMeal(props.meal);
       setSelectedCategory(props.meal.category);
       console.log(currentMeal);
-      window.scroll(0, 0);
+      titleRef.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start',
+      });
     }
   }, [props.meal, currentMeal]);
 
@@ -124,118 +131,138 @@ const MealNewForm = (props) => {
   };
 
   return (
-    <form onSubmit={submitHandler}>
-      <button type="button" onClick={props.onCancel}>
-        Cancel
-      </button>
-      {error && <p>{error}</p>}
-      <div>
-        <label htmlFor="name">Name:</label>
-        <input
-          type="text"
-          id="name"
-          ref={nameInput}
-          defaultValue={props.meal ? currentMeal.name : ''}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="category">Category:</label>
-        <select
-          id="category"
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          value={selectedCategory}
-        >
-          {availableCategories.map((value, id) => (
-            <option key={id}>{value}</option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label htmlFor="ingredients">Ingredients:</label>
-        <select id="ingredients" ref={ingredientInput}>
-          {availableIngredients.map((value, id) => (
-            <option key={id}>{value}</option>
-          ))}
-        </select>
-        <button
-          type="button"
-          onClick={() => {
-            addIngredient(ingredientInput.current.value);
-          }}
-        >
-          Add
-        </button>
-        {ingredients.length !== 0 && (
-          <IngredientList
-            ingredients={ingredients}
-            onDelete={deleteIngredient}
+    <div className={classes.container}>
+      <h3 ref={titleRef}>{props.method === 'POST' ? 'Add' : 'Edit'}</h3>
+      <form onSubmit={submitHandler} className={classes.form}>
+        {error && <p className={classes.error}>{error}</p>}
+        <div className={classes.input}>
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            ref={nameInput}
+            defaultValue={props.meal ? currentMeal.name : ''}
+            required
           />
-        )}
-      </div>
-      <div>
-        <label htmlFor="price">Price:</label>
-        <input
-          type="number"
-          id="price"
-          ref={priceInput}
-          min={0}
-          step={0.01}
-          defaultValue={props.meal ? currentMeal.price : ''}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="calories">Calories:</label>
-        <input
-          type="number"
-          id="calories"
-          ref={caloriesInput}
-          min={0}
-          defaultValue={props.meal ? currentMeal.calories : ''}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="vegetarian">Vegetarian:</label>
-        <input
-          type="checkbox"
-          id="vegetarian"
-          ref={isVegetarianCheckbox}
-          defaultChecked={props.meal ? currentMeal.isVegetarian : false}
-        />
-        <label htmlFor="vegan">Vegan:</label>
-        <input
-          type="checkbox"
-          id="vegan"
-          ref={isVeganCheckbox}
-          defaultChecked={props.meal ? currentMeal.isVegan : false}
-        />
-        <label htmlFor="kosher">Kosher:</label>
-        <input
-          type="checkbox"
-          id="kosher"
-          ref={isKosherCheckbox}
-          defaultChecked={props.meal ? currentMeal.isKosher : false}
-        />
-        <label htmlFor="lactoseFree">Lactose free:</label>
-        <input
-          type="checkbox"
-          id="lactoseFree"
-          ref={isLactoseFreeCheckbox}
-          defaultChecked={props.meal ? currentMeal.isLactoseFree : false}
-        />
-        <label htmlFor="glutenFree">Gluten free:</label>
-        <input
-          type="checkbox"
-          id="glutenFree"
-          ref={isGlutenFreeCheckbox}
-          defaultChecked={props.meal ? currentMeal.isGlutenFree : false}
-        />
-      </div>
-
-      <button type="submit">Save</button>
-    </form>
+        </div>
+        <div className={classes.select}>
+          <label htmlFor="category">Category:</label>
+          <select
+            id="category"
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            value={selectedCategory}
+          >
+            {availableCategories.map((value, id) => (
+              <option key={id}>{value}</option>
+            ))}
+          </select>
+        </div>
+        <div className={classes.select}>
+          <label htmlFor="ingredients">Ingredients:</label>
+          <select id="ingredients" ref={ingredientInput}>
+            {availableIngredients.map((value, id) => (
+              <option key={id}>{value}</option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={() => {
+              addIngredient(ingredientInput.current.value);
+            }}
+          >
+            Add
+          </button>
+          {ingredients.length !== 0 && (
+            <IngredientList
+              ingredients={ingredients}
+              onDelete={deleteIngredient}
+            />
+          )}
+        </div>
+        <div className={classes.input}>
+          <label htmlFor="price">Price/$:</label>
+          <input
+            type="number"
+            id="price"
+            ref={priceInput}
+            min={0}
+            step={0.01}
+            defaultValue={props.meal ? currentMeal.price : ''}
+            required
+          />
+        </div>
+        <div className={classes.input}>
+          <label htmlFor="calories">Calories/kcal:</label>
+          <input
+            type="number"
+            id="calories"
+            ref={caloriesInput}
+            min={0}
+            defaultValue={props.meal ? currentMeal.calories : ''}
+            required
+          />
+        </div>
+        <div className={classes.checks}>
+          <div className={classes.check}>
+            <input
+              type="checkbox"
+              id="vegetarian"
+              ref={isVegetarianCheckbox}
+              defaultChecked={props.meal ? currentMeal.isVegetarian : false}
+            />
+            <label htmlFor="vegetarian">Vegetarian</label>
+          </div>
+          <div className={classes.check}>
+            <input
+              type="checkbox"
+              id="vegan"
+              ref={isVeganCheckbox}
+              defaultChecked={props.meal ? currentMeal.isVegan : false}
+            />
+            <label htmlFor="vegan">Vegan</label>
+          </div>
+          <div className={classes.check}>
+            <input
+              type="checkbox"
+              id="kosher"
+              ref={isKosherCheckbox}
+              defaultChecked={props.meal ? currentMeal.isKosher : false}
+            />
+            <label htmlFor="kosher">Kosher</label>
+          </div>
+          <div className={classes.check}>
+            <input
+              type="checkbox"
+              id="lactoseFree"
+              ref={isLactoseFreeCheckbox}
+              defaultChecked={props.meal ? currentMeal.isLactoseFree : false}
+            />
+            <label htmlFor="lactoseFree">Lactose free</label>
+          </div>
+          <div className={classes.check}>
+            <input
+              type="checkbox"
+              id="glutenFree"
+              ref={isGlutenFreeCheckbox}
+              defaultChecked={props.meal ? currentMeal.isGlutenFree : false}
+            />
+            <label htmlFor="glutenFree">Gluten free</label>
+          </div>
+        </div>
+        <div className={classes.actions}>
+          <button type="submit" className={classes['btn-save']}>
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={props.onCancel}
+            className={classes['btn-cancel']}
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
   );
 };
 

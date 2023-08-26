@@ -8,17 +8,19 @@ const SignUpPage = () => {
   const { userData } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (userData) {
-      if (userData.isAdmin) {
-        navigate('/admin');
-      } else {
-        navigate('/shop');
-      }
-    } else {
-      console.log('STAY SIGNUP');
-    }
-  }, [navigate, userData]);
+  // useEffect(() => {
+  //   console.log('signup page:');
+  //   console.log(userData);
+  //   if (userData) {
+  //     if (userData.isAdmin) {
+  //       navigate('/admin');
+  //     } else {
+  //       navigate('/shop');
+  //     }
+  //   } else {
+  //     console.log('STAY SIGNUP');
+  //   }
+  // }, [navigate, userData]);
   return <AuthenticationForm isLogin={false} />;
 };
 

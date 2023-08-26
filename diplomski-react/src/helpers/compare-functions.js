@@ -1,4 +1,29 @@
+export const compareByValueAscending = (a, b) => {
+  if (a.value < b.value) {
+    return -1;
+  }
+  if (a.value > b.value) {
+    return 1;
+  }
+  return 0;
+};
+
+export const compareByCategoryAscending = (a, b) => {
+  if (a.category < b.category) {
+    return -1;
+  }
+  if (a.category > b.category) {
+    return 1;
+  }
+  return 0;
+};
+
 export const compareByNameAscending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (a.name < b.name) {
     return -1;
   }
@@ -9,6 +34,11 @@ export const compareByNameAscending = (a, b) => {
 };
 
 export const compareByNameDescending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (a.name < b.name) {
     return 1;
   }
@@ -18,6 +48,11 @@ export const compareByNameDescending = (a, b) => {
   return 0;
 };
 export const compareByPriceAscending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (+a.price < +b.price) {
     return -1;
   }
@@ -28,6 +63,11 @@ export const compareByPriceAscending = (a, b) => {
 };
 
 export const compareByPriceDescending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (+a.price < +b.price) {
     return 1;
   }
@@ -37,6 +77,11 @@ export const compareByPriceDescending = (a, b) => {
   return 0;
 };
 export const compareByCaloriesAscending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (+a.calories < +b.calories) {
     return -1;
   }
@@ -47,6 +92,11 @@ export const compareByCaloriesAscending = (a, b) => {
 };
 
 export const compareByCaloriesDescending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (+a.calories < +b.calories) {
     return 1;
   }
@@ -57,6 +107,11 @@ export const compareByCaloriesDescending = (a, b) => {
 };
 
 export const compareByLikesAscending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (+a.numOfLikes < +b.numOfLikes) {
     return -1;
   }
@@ -67,6 +122,11 @@ export const compareByLikesAscending = (a, b) => {
 };
 
 export const compareByLikesDescending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (+a.numOfLikes < +b.numOfLikes) {
     return 1;
   }
@@ -76,6 +136,11 @@ export const compareByLikesDescending = (a, b) => {
   return 0;
 };
 export const compareByOrdersAscending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (+a.numOfOrders < +b.numOfOrders) {
     return -1;
   }
@@ -86,6 +151,11 @@ export const compareByOrdersAscending = (a, b) => {
 };
 
 export const compareByOrdersDescending = (a, b) => {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
   if (+a.numOfOrders < +b.numOfOrders) {
     return 1;
   }
@@ -95,28 +165,67 @@ export const compareByOrdersDescending = (a, b) => {
   return 0;
 };
 export const compareByPopularityAscending = (a, b) => {
-  const popA = +a.numOfLikes / +a.numOfOrders;
-  const popB = +b.numOfLikes / +b.numOfOrders;
-  if (popA < popB) {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
+  if (+a.numOfLikes < +b.numOfLikes) {
     return -1;
   }
-  if (popA > popB) {
+  if (+a.numOfLikes > +b.numOfLikes) {
     return 1;
   }
   return 0;
 };
 
 export const compareByPopularityDescending = (a, b) => {
-  const popA = +a.numOfLikes / +a.numOfOrders;
-  const popB = +b.numOfLikes / +b.numOfOrders;
-  if (popA < popB) {
+  let categoryComparison = compareByCategoryAscending(a, b);
+  if (categoryComparison !== 0) {
+    return categoryComparison;
+  }
+
+  if (+a.numOfLikes < +b.numOfLikes) {
     return 1;
   }
-  if (popA > popB) {
+  if (+a.numOfLikes > +b.numOfLikes) {
     return -1;
   }
   return 0;
 };
+// export const compareByPopularityAscending = (a, b) => {
+//   let categoryComparison = compareByCategoryAscending(a, b);
+//   if (categoryComparison !== 0) {
+//     return categoryComparison;
+//   }
+
+//   const popA = +a.numOfLikes / +a.numOfOrders;
+//   const popB = +b.numOfLikes / +b.numOfOrders;
+//   if (popA < popB) {
+//     return -1;
+//   }
+//   if (popA > popB) {
+//     return 1;
+//   }
+//   return 0;
+// };
+
+// export const compareByPopularityDescending = (a, b) => {
+//   let categoryComparison = compareByCategoryAscending(a, b);
+//   if (categoryComparison !== 0) {
+//     return categoryComparison;
+//   }
+
+//   const popA = +a.numOfLikes / +a.numOfOrders;
+//   const popB = +b.numOfLikes / +b.numOfOrders;
+//   if (popA < popB) {
+//     return 1;
+//   }
+//   if (popA > popB) {
+//     return -1;
+//   }
+//   return 0;
+// };
 
 //arr is what we check, target are all values that need to be inside arr
 export const checkIncludedIngredients = (ingredients, ingredientsToInclude) => {
