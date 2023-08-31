@@ -4,22 +4,41 @@
     <div :class="$style.info">
       <router-link to="/shop/cart">Cart: ({{ cart.length }})</router-link>
 
-      <p><strong>Email: </strong>finis@later</p>
-      <button>Log out</button>
+      <p><strong>Email: </strong>{{ userData.email }}</p>
+      <button @click="logoutHandler">Log out</button>
 
-      <!-- {error && <p>{error}</p>} -->
+      <p v-if="error">{{ error }}</p>
     </div>
   </header>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
+  data() {
+    return {
+      error: null,
+    };
+  },
   computed: {
     ...mapGetters({
       cart: 'cart/cart',
+      userData: 'auth/userData',
     }),
+  },
+  methods: {
+    ...mapActions({
+      logout: 'auth/logout',
+    }),
+    async logoutHandler() {
+      this.error = null;
+      try {
+        await this.logout();
+      } catch (e) {
+        this.error = e.message;
+      }
+    },
   },
 };
 </script>

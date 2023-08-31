@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.container">
-    <h2>MENU</h2>
+    <h2>Menu</h2>
     <button
       v-if="!filterVisible"
       @click="showFilter"

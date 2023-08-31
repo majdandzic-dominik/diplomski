@@ -2,15 +2,12 @@
   <header :class="$style.header">
     <div :class="$style['header-basic']">
       <h1>Dashboard</h1>
-      <!-- {currentUser && (
-          <div class='.info'>
-            <p>
-              <strong>Signed in as:</strong> {currentUser.email}
-            </p>
-            <button onClick={logoutHandler}>Log out</button>
-          </div>
-        )}
-        {error && <p>{error}</p>} -->
+
+      <div :class="$style.info">
+        <p><strong>Signed in as:</strong> {{ userData.email }}</p>
+        <button @click="logoutHandler">Log out</button>
+      </div>
+      <p v-if="error">{{ error }}</p>
     </div>
     <nav :class="$style.navigation">
       <ul :class="$style.list">
@@ -27,6 +24,36 @@
     </nav>
   </header>
 </template>
+
+<script>
+import { mapActions, mapGetters } from 'vuex';
+
+export default {
+  data() {
+    return {
+      error: null,
+    };
+  },
+  computed: {
+    ...mapGetters({
+      userData: 'auth/userData',
+    }),
+  },
+  methods: {
+    ...mapActions({
+      logout: 'auth/logout',
+    }),
+    async logoutHandler() {
+      this.error = null;
+      try {
+        await this.logout();
+      } catch (e) {
+        this.error = e.message;
+      }
+    },
+  },
+};
+</script>
 
 <style module>
 .header {

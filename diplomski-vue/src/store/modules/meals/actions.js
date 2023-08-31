@@ -80,6 +80,25 @@ export default {
       }
     }
   },
+  async updateMealOrders(context, meal) {
+    const response = await fetch(
+      'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/' +
+        'meals/' +
+        meal.id +
+        '.json',
+      {
+        method: 'PATCH',
+        body: JSON.stringify(meal),
+        headers: {
+          'Content-type': 'application/json',
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error('Could not save data!');
+    }
+  },
   async deleteMeal(context, meal) {
     const response = await fetch(
       'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/' +
