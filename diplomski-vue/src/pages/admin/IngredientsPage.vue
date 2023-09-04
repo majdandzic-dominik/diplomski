@@ -26,12 +26,12 @@
     ></simple-form>
 
     <simple-list
-      v-if="ingredients"
+      v-if="ingredients.length > 0"
       :items="ingredients"
       @edit-handler="updateEditForm"
       @delete-handler="deleteIngredient"
     ></simple-list>
-    <p v-else>No ingredients found.</p>
+    <p v-else :class="$style['not-found']">No ingredients found.</p>
   </div>
 </template>
 
@@ -164,6 +164,14 @@ export default {
   text-align: center;
   border-bottom: 2px var(--color-gray-400) solid;
   padding-bottom: 8px;
+}
+
+.not-found {
+  align-self: center;
+  width: 100%;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 .btn-add {

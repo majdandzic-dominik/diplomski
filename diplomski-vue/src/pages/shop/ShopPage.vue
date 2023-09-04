@@ -23,7 +23,13 @@
         </option>
       </select>
     </div>
-    <meal-list :meals="filteredMeals" :isAdmin="false"></meal-list>
+    <meal-list
+      v-if="meals.length > 0"
+      @like-handler="loadMeals"
+      :meals="filteredMeals"
+      :isAdmin="false"
+    ></meal-list>
+    <p v-else :class="$style['not-found']">No meals found.</p>
   </div>
 </template>
 
@@ -179,7 +185,13 @@ export default {
   border-bottom: 2px var(--color-gray-400) solid;
   padding-bottom: 8px;
 }
-
+.not-found {
+  align-self: center;
+  width: 100%;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
+}
 .btn-filter {
   align-self: flex-end;
   font: inherit;

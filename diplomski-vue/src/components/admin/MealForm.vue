@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.container">
-    <h3>{{ method }}</h3>
+    <h3 ref="titleForScroll">{{ method }}</h3>
     <form :class="$style.form" @submit.prevent="submitHandler">
       <p v-if="error" :class="$style.error">{{ error }}</p>
       <!-- name -->
@@ -128,12 +128,19 @@ export default {
       this.setUpForm(this.meal);
     }
   },
+  mounted() {
+    this.scrollToTop();
+  },
   watch: {
     meal(newMeal) {
       this.setUpForm(newMeal);
+      this.scrollToTop();
     },
   },
   methods: {
+    scrollToTop() {
+      this.$refs['titleForScroll'].scrollIntoView({ behavior: 'smooth' });
+    },
     async loadCategories() {
       this.error = null;
       try {

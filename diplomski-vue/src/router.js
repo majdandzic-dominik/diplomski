@@ -92,7 +92,7 @@ router.beforeEach(function (to, from, next) {
   const currentUser = auth.currentUser;
   const requiresAuth = to.meta.requiresAuth;
   const isAdmin = store.getters['auth/userData'].isAdmin;
-  console.log(to);
+  
   if (
     to.fullPath != '/admin' &&
     to.fullPath != '/admin/meals' &&

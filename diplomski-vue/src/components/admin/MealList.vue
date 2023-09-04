@@ -9,7 +9,7 @@
         <!-- availability admin -->
         <div v-if="isAdmin" :class="$style.availability">
           <span>{{ meal.isAvailable ? 'Available' : 'Unavailable' }}</span>
-          <button>
+          <button @click="availabilityHandler(meal)">
             {{ meal.isAvailable ? 'Set unavailable' : 'Set available' }}
           </button>
         </div>
@@ -84,13 +84,20 @@
         </div>
 
         <!-- likes user -->
-        <div v-if="!isAdmin" :class="$style.likes">
+        <div v-if="!isAdmin && !isLoading" :class="$style.likes">
           <p>
             <strong>Likes: </strong>
             {{ meal.numOfLikes }}
           </p>
-          <button>Like</button>
+          <button @click="updateLikes(meal)">
+            {{
+              userData.likes && userData.likes.includes(meal.id)
+                ? 'Remove Like'
+                : 'Like'
+            }}
+          </button>
         </div>
+        <div v-else-if="!isAdmin && isLoading">Sending data...</div>
 
         <!-- cart controls user -->
         <div
@@ -117,18 +124,25 @@
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
-  emits: ['editHandler', 'deleteHandler'],
+  emits: ['editHandler', 'deleteHandler', 'likeHandler', 'availabilityHandler'],
   props: ['meals', 'isAdmin'],
+  data() {
+    return { isLoading: false };
+  },
   computed: {
     ...mapGetters({
       cart: 'cart/cart',
       getItem: 'cart/getItem',
+      userData: 'auth/userData',
     }),
   },
   methods: {
     ...mapActions({
       addToCart: 'cart/addToCart',
       removeFromCart: 'cart/removeFromCart',
+      updateLocalUserData: 'auth/updateLocalUserData',
+      updateUserLikes: 'auth/updateUserLikes',
+      updateMealOrders: 'meals/updateMealOrders',
     }),
     editHandler(meal) {
       this.$emit('editHandler', {
@@ -147,6 +161,46 @@ export default {
     },
     deleteHandler(meal) {
       this.$emit('deleteHandler', { id: meal.id });
+    },
+    async updateLikes(meal) {
+      console.log('1');
+      this.isLoading = true;
+      let likes = [];
+      if (this.userData.likes) {
+        likes = [...this.userData.likes];
+
+        if (!likes.includes(meal.id)) {
+          likes.push(meal.id);
+          await this.updateMealOrders({
+            ...meal,
+            numOfLikes: meal.numOfLikes + 1,
+          });
+        } else {
+          likes.splice(likes.indexOf(meal.id), 1);
+          await this.updateMealOrders({
+            ...meal,
+            numOfLikes: meal.numOfLikes - 1,
+          });
+        }
+        await this.updateUserLikes({ ...this.userData, likes: likes });
+        await this.updateLocalUserData();
+      } else {
+        likes.push(meal.id);
+        await this.updateUserLikes({ ...this.userData, likes: likes });
+        await this.updateLocalUserData();
+      }
+      this.isLoading = false;
+      this.likeHandler();
+    },
+    likeHandler() {
+      this.$emit('likeHandler');
+    },
+    async availabilityHandler(meal) {
+      await this.updateMealOrders({
+        ...meal,
+        isAvailable: !meal.isAvailable,
+      });
+      this.$emit('availabilityHandler');
     },
   },
 };

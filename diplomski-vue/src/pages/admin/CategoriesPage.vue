@@ -25,12 +25,12 @@
       :item="categoryForEdit"
     ></simple-form>
     <simple-list
-      v-if="categories"
+      v-if="categories.length > 0"
       :items="categories"
       @edit-handler="updateEditForm"
       @delete-handler="deleteCategory"
     ></simple-list>
-    <p v-else>No ingredients found.</p>
+    <p v-else :class="$style['not-found']">No categories found.</p>
   </div>
 </template>
 
@@ -162,6 +162,14 @@ export default {
   text-align: center;
   border-bottom: 2px var(--color-gray-400) solid;
   padding-bottom: 8px;
+}
+
+.not-found {
+  align-self: center;
+  width: 100%;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 .btn-add {

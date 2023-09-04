@@ -8,9 +8,13 @@ import { auth } from './firebase';
 let app;
 auth.onAuthStateChanged(async () => {
   if (auth.currentUser) {
-    await store.dispatch('auth/updateUserData');
-    console.log('u main');
-    console.log(store.getters['auth/userData']);
+    const isNewUser = await store.dispatch('auth/checkIfNewUser');
+
+    if (isNewUser) {
+      await store.dispatch('auth/updateOnlineUserData');
+    }
+    await store.dispatch('auth/updateLocalUserData');
+
     if (store.getters['auth/userData'].isAdmin) {
       router.push('/admin');
     } else {

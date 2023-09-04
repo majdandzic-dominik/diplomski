@@ -23,15 +23,20 @@
       :meal="mealForEdit"
     ></meal-form>
     <meal-list
+      v-if="meals.length > 0"
       @edit-handler="updateEditForm"
       @delete-handler="deleteMeal"
+      @availability-handler="changeAvailability"
       :meals="meals"
       :isAdmin="true"
+      :isLoading="isLoading"
     ></meal-list>
+    <p v-else :class="$style['not-found']">No meals found.</p>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import MealForm from '../../components/admin/MealForm.vue';
 import MealList from '../../components/admin/MealList.vue';
 
@@ -46,9 +51,13 @@ export default {
       mealForEdit: {},
       addFormVisible: false,
       editFormVisible: false,
+      isLoading: false,
     };
   },
   computed: {
+    ...mapActions({
+      updateMealOrders: 'meals/updateMealOrders',
+    }),
     meals() {
       return this.$store.getters['meals/meals'];
     },
@@ -108,7 +117,7 @@ export default {
           isGlutenFree: meal.isGlutenFree,
         });
         this.loadMeals();
-        this.hideAddForm();
+        this.hideEditForm();
       } catch (e) {
         this.error = e.message;
       }
@@ -147,6 +156,9 @@ export default {
     hideEditForm() {
       this.editFormVisible = false;
     },
+    async changeAvailability() {
+      this.loadMeals();
+    },
   },
 };
 </script>
@@ -182,6 +194,13 @@ export default {
   text-align: center;
   border-bottom: 2px var(--color-gray-400) solid;
   padding-bottom: 8px;
+}
+.not-found {
+  align-self: center;
+  width: 100%;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 .btn-add {

@@ -29,8 +29,6 @@ export default {
       this.error = null;
       try {
         await this.login({ ...userInfo });
-        console.log('u login');
-        console.log(this.userData);
       } catch (e) {
         this.error = e.message;
       }

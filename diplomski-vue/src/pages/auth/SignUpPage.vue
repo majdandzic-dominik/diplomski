@@ -19,11 +19,13 @@ export default {
   methods: {
     ...mapActions({
       signup: 'auth/signup',
+      // updateOnlineUserData: 'auth/updateOnlineUserData',
     }),
     async register(userInfo) {
       this.error = null;
       try {
-        this.signup({ ...userInfo });
+        await this.signup({ ...userInfo });
+        // await this.updateOnlineUserData();
       } catch (e) {
         this.error = e.message;
       }

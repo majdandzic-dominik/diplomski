@@ -2,18 +2,30 @@ import { auth, database } from '@/firebase';
 
 export default {
   async signup(context, { email, password }) {
+    // const res = Promise.all([
+    //   auth.createUserWithEmailAndPassword(email, password),
+    //   database.ref('users/' + auth.currentUser.uid).set({
+    //     email: email,
+    //     isAdmin: false,
+    //     likes: ['1'],
+    //   }),
+    // ]);
+
     const res = await auth.createUserWithEmailAndPassword(email, password);
-    await database.ref('users/' + auth.currentUser.uid).set({
-      email: email,
-      isAdmin: false,
-      likes: ['1'],
-    });
+
     return res;
   },
   async login(context, { email, password }) {
     return auth.signInWithEmailAndPassword(email, password);
   },
-  async updateUserData(context) {
+  async updateOnlineUserData() {
+    await database.ref('users/' + auth.currentUser.uid).set({
+      email: auth.currentUser.email,
+      isAdmin: false,
+      likes: ['1'],
+    });
+  },
+  async updateLocalUserData(context) {
     const response = await fetch(
       'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/' +
         'users/' +
@@ -27,20 +39,31 @@ export default {
 
     const data = await response.json();
     context.commit('setUserData', data);
+  },
+  async checkIfNewUser() {
+    const response = await fetch(
+      'https://react-http-530b7-default-rtdb.europe-west1.firebasedatabase.app/' +
+        'users/' +
+        auth.currentUser.uid +
+        '.json'
+    );
 
-    // database
-    //   .ref()
-    //   .child('users')
-    //   .child(auth.currentUser.uid)
-    //   .get()
-    //   .then((snapshot) => {
-    //     if (snapshot.exists()) {
-    //       context.commit('setUserData', snapshot.val());
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     throw error;
-    //   });
+    if (!response.ok) {
+      throw new Error('Could not load data!');
+    }
+
+    const data = await response.json();
+
+    if (data) {
+      return false;
+    } else {
+      return true;
+    }
+  },
+  async updateUserLikes(context, payload) {
+    await database.ref('users/' + auth.currentUser.uid).set({
+      ...payload,
+    });
   },
   clearUserData(context) {
     context.commit('setUserData', {});
