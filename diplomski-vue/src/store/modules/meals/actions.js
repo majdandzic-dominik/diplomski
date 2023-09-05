@@ -37,7 +37,7 @@ export default {
     context.commit('setMeals', loadedMeals);
   },
   async addMeal(context, meal) {
-    if (context.state.meals.some((e) => e.name === meal.name)) {
+    if (context.state.meals.some((e) => e.name.toLowerCase() === meal.name.toLowerCase())) {
       throw new Error('Meal already exists');
     } else {
       const response = await fetch(
@@ -58,7 +58,11 @@ export default {
     }
   },
   async editMeal(context, meal) {
-    if (context.state.meals.some((e) => e.name === meal.name)) {
+    const validMeals = context.state.meals.filter((m) => m.id != meal.id);
+
+    if (
+      validMeals.some((e) => e.name.toLowerCase() === meal.name.toLowerCase())
+    ) {
       throw new Error('Meal already exists');
     } else {
       const response = await fetch(

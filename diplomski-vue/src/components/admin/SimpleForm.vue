@@ -1,6 +1,6 @@
 <template>
   <div :class="$style.container">
-    <h3>{{ method }}</h3>
+    <h3 ref="titleForScroll">{{ method }}</h3>
     <form :class="$style.form" @submit.prevent="submitHandler">
       <label :for="type">{{ type }} name: </label>
       <input type="text" :id="type" required v-model="value" />
@@ -30,6 +30,9 @@ export default {
       this.value = this.item.value;
     }
   },
+  mounted() {
+    this.scrollToTop();
+  },
   computed: {
     id() {
       if (this.item) {
@@ -40,6 +43,9 @@ export default {
     },
   },
   methods: {
+    scrollToTop() {
+      this.$refs['titleForScroll'].scrollIntoView({ behavior: 'smooth' });
+    },
     submitHandler() {
       if (this.value.trim() != '') {
         this.$emit('submitHandler', { id: this.id, value: this.value });
@@ -52,6 +58,7 @@ export default {
   watch: {
     item(newItem) {
       this.value = newItem.value;
+      this.scrollToTop();
     },
   },
 };
