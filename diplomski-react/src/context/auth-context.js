@@ -21,13 +21,12 @@ export const AuthProvider = (props) => {
   };
 
   const login = (email, password) => {
-    console.log(userData);
     return auth.signInWithEmailAndPassword(email, password);
   };
 
   const logout = () => {
     console.log('logging out page:');
-    console.log(userData);
+
     return auth.signOut();
   };
 

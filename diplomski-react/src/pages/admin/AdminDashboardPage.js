@@ -1,12 +1,7 @@
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import AdminDashboardNav from '../../components/admin/AdminDashboardNav';
-import { useContext, useEffect } from 'react';
-import { AuthContext } from '../../context/auth-context';
 
 const AdminDashboardPage = () => {
-  const { userData } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   // useEffect(() => {
   //   if (userData) {
   //     if (userData.isAdmin) {

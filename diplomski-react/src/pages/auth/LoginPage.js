@@ -1,12 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import AuthenticationForm from '../../components/auth/AuthenticationForm';
-import { useContext, useEffect } from 'react';
-import { AuthContext } from '../../context/auth-context';
 
 const LoginPage = () => {
-  const { userData } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   // useEffect(() => {
   //   if (userData) {
   //     if (userData.isAdmin) {

@@ -1,13 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import AuthenticationForm from '../../components/auth/AuthenticationForm';
 
-import { useContext, useEffect } from 'react';
-import { AuthContext } from '../../context/auth-context';
-
 const SignUpPage = () => {
-  const { userData } = useContext(AuthContext);
-  const navigate = useNavigate();
-
   // useEffect(() => {
   //   console.log('signup page:');
   //   console.log(userData);

@@ -20,9 +20,8 @@ const MealsList = (props) => {
     let newData = { ...userData };
     let likes = [];
     if (userData.likes) {
-      console.log('likes' + userData.likes);
       likes = [...userData.likes];
-      console.log('likes' + likes);
+
       if (!likes.includes(item.id)) {
         likes.push(item.id);
         updateItemLikes(item, 'ADD');

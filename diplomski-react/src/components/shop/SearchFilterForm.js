@@ -238,15 +238,15 @@ const SearchFilterForm = (props) => {
         <div className={classes.checks}>
           <div className={classes.check}>
             <input type="checkbox" id="vegetarian" ref={isVegetarianCheckbox} />
-            <label htmlFor="vegetarian">Vegetarian:</label>
+            <label htmlFor="vegetarian">Vegetarian</label>
           </div>
           <div className={classes.check}>
             <input type="checkbox" id="vegan" ref={isVeganCheckbox} />
-            <label htmlFor="vegan">Vegan:</label>
+            <label htmlFor="vegan">Vegan</label>
           </div>
           <div className={classes.check}>
             <input type="checkbox" id="kosher" ref={isKosherCheckbox} />
-            <label htmlFor="kosher">Kosher:</label>
+            <label htmlFor="kosher">Kosher</label>
           </div>
           <div className={classes.check}>
             <input
@@ -254,11 +254,11 @@ const SearchFilterForm = (props) => {
               id="lactoseFree"
               ref={isLactoseFreeCheckbox}
             />
-            <label htmlFor="lactoseFree">Lactose free:</label>
+            <label htmlFor="lactoseFree">Lactose free</label>
           </div>
           <div className={classes.check}>
             <input type="checkbox" id="glutenFree" ref={isGlutenFreeCheckbox} />
-            <label htmlFor="glutenFree">Gluten free:</label>
+            <label htmlFor="glutenFree">Gluten free</label>
           </div>
         </div>
 

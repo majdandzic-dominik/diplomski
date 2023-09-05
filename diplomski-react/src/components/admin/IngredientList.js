@@ -7,8 +7,8 @@ const IngredientList = (props) => {
         <li
           key={index}
           className={`${classes.item} ${
-            props.type === 'INCLUDE' ? classes.include : classes.exclude
-          }`}
+            props.type === 'INCLUDE' && classes.include
+          } ${props.type === 'EXCLUDE' && classes.exclude}`}
         >
           {ingredient}
           <button

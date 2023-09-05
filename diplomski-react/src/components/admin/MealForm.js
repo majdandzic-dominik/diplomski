@@ -56,6 +56,7 @@ const MealNewForm = (props) => {
         ...(props.method === 'POST' && { isAvailable: true }),
       };
 
+      console.log(meal);
       props.onSubmit(meal, props.method);
     }
   };
@@ -90,6 +91,7 @@ const MealNewForm = (props) => {
       }
       if (type === 'categories') {
         setAvailableCategories(loadedData);
+        setSelectedCategory(loadedData[0]);
       }
     } catch (error) {
       setError(error.message);
@@ -107,7 +109,7 @@ const MealNewForm = (props) => {
       setIngredients(props.meal.ingredients);
       setCurrentMeal(props.meal);
       setSelectedCategory(props.meal.category);
-      console.log(currentMeal);
+
       titleRef.current.scrollIntoView({
         behavior: 'smooth',
         block: 'start',

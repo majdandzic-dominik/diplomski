@@ -83,7 +83,12 @@ const MealsPage = () => {
   //add item
   const addHandler = async (meal, method) => {
     setError(null);
-    if (method === 'POST' && meals.some((e) => e.name === meal.name)) {
+    const validMeals = meals.filter((m) => m.id !== meal.id);
+    if (
+      (method === 'POST' &&
+        meals.some((e) => e.name.toLowerCase() === meal.name.toLowerCase())) ||
+      validMeals.some((e) => e.name.toLowerCase() === meal.name.toLowerCase())
+    ) {
       setError('Meal already exists');
     } else {
       let url = apiURL + 'meals.json';
