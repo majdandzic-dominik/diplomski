@@ -67,6 +67,7 @@ export default {
       selectedOption: 'Name[A-Z]',
       filteredMeals: [],
       filterVisible: false,
+      filterOptions: null,
     };
   },
   computed: {
@@ -92,11 +93,15 @@ export default {
       try {
         await this.$store.dispatch('meals/loadMeals');
         this.filteredMeals = this.meals;
+        if (this.filterOptions) {
+          this.filterMeals(this.filterOptions);
+        }
       } catch (e) {
         this.error = e.message;
       }
     },
     filterMeals(options) {
+      this.filterOptions = options;
       this.filteredMeals = [];
       this.meals.forEach((meal) => {
         if (

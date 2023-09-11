@@ -59,9 +59,9 @@
             v-model="caloriesMin"
             type="number"
             id="calories-min"
-            min="{0}"
-            max="{9999}"
-            step="1"
+            :min="0"
+            :max="9999"
+            :step="1"
             required
           />
         </div>
@@ -71,9 +71,9 @@
             v-model="caloriesMax"
             type="number"
             id="calories-max"
-            min="{1}"
-            max="{1000}"
-            step="1"
+            :min="1"
+            :max="10000"
+            :step="1"
             required
           />
         </div>
