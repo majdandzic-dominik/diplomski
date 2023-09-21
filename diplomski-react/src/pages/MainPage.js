@@ -10,21 +10,16 @@ const MainPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('main page:');
-    console.log(userData);
     if (!userDataLoading) {
       if (userData) {
         if (userData.isAdmin) {
-          console.log('TO ADMIN');
           setLoading(false);
           navigate('/admin');
         } else {
-          console.log('TO SHOP');
           setLoading(false);
           navigate('/shop');
         }
       } else {
-        console.log('TO LOGIN');
         setLoading(false);
         navigate('/login');
       }

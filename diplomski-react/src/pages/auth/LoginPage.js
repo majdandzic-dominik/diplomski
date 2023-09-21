@@ -1,4 +1,6 @@
+import { redirect } from 'react-router-dom';
 import AuthenticationForm from '../../components/auth/AuthenticationForm';
+import { auth, database } from '../../firebase';
 
 const LoginPage = () => {
   // useEffect(() => {
@@ -17,24 +19,21 @@ const LoginPage = () => {
 
 export default LoginPage;
 
-// export const loginPageLoader = async () => {
-//   console.log('LOGIN CUR USER>' + auth.currentUser);
-//   if (auth.currentUser) {
-//     const user = await database
-//       .ref('/users/' + auth.currentUser.uid)
-//       .once('value')
-//       .then((snapshot) => {
-//         return snapshot.val();
-//       });
+export const loginPageLoader = async () => {
+  if (auth.currentUser) {
+    const user = await database
+      .ref('/users/' + auth.currentUser.uid)
+      .once('value')
+      .then((snapshot) => {
+        return snapshot.val();
+      });
 
-//     if (user.isAdmin) {
-//       console.log('to admin');
-//       return redirect('/admin');
-//     } else {
-//       console.log('to shop');
-//       return redirect('/shop');
-//     }
-//   }
-//   console.log('stay login');
-//   return null;
-// };
+    if (user.isAdmin) {
+      return redirect('/admin');
+    } else {
+      return redirect('/shop');
+    }
+  }
+
+  return null;
+};

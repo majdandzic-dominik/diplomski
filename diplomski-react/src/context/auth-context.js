@@ -10,7 +10,7 @@ export const AuthProvider = (props) => {
   const [userDataLoading, setUserDataLoading] = useState(false);
 
   const signup = async (email, password) => {
-    console.log(userData);
+
     const res = await auth.createUserWithEmailAndPassword(email, password);
     await database.ref('users/' + auth.currentUser.uid).set({
       email: email,
