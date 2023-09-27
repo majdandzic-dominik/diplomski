@@ -1,0 +1,91 @@
+<template>
+  <ul :class="$style.list">
+    <li v-for="item in items" :key="item.id">
+      <p>{{ item.value }}</p>
+      <div :class="$style.actions">
+        <button @click="editHandler(item)" :class="$style['btn-edit']">
+          Edit
+        </button>
+        <button @click="deleteHandler(item)" :class="$style['btn-delete']">
+          Delete
+        </button>
+      </div>
+    </li>
+  </ul>
+</template>
+
+<script>
+export default {
+  emits: ['editHandler', 'deleteHandler'],
+  props: ['items'],
+  methods: {
+    editHandler(item) {
+      this.$emit('editHandler', { id: item.id, value: item.value });
+    },
+    deleteHandler(item) {
+      this.$emit('deleteHandler', { id: item.id});
+    },
+  },
+};
+</script>
+
+<style module>
+.list {
+  width: 100%;
+}
+
+.list > li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-primary-300);
+  margin-bottom: 10px;
+  padding: 0 1rem;
+  border-radius: 5px;
+  border: 2px var(--color-primary-600) solid;
+}
+
+.list > li:first-of-type {
+  margin-top: 20px;
+}
+
+.list > li p {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+
+.actions {
+  display: flex;
+  flex-direction: row;
+}
+
+.actions button {
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.25rem 1rem;
+  border-radius: 4px;
+  color: black;
+  border: none;
+}
+
+.actions button.btn-edit {
+  background-color: var(--color-edit-primary);
+  margin-right: 5px;
+  border: 1px solid green;
+}
+
+.actions button.btn-delete {
+  background-color: var(--color-delete-primary);
+  border: 1px solid red;
+}
+
+.actions button.btn-edit:hover {
+  background-color: var(--color-edit-secondary);
+}
+
+.actions button.btn-delete:hover {
+  background-color: var(--color-delete-secondary);
+}
+</style>
